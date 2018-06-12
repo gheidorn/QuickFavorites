@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,6 +25,14 @@ public class FavoritesController {
 
     @RequestMapping("/favorites")
     public List<Favorites> favorites() {
+        List<Favorites> favorites = new ArrayList<>();
+        favoritesRepository.findAll().forEach(favorites::add);
+        return favorites;
+    }
+
+    @Cacheable({ "favorites" })
+    @RequestMapping("/favorites/cacheable")
+    public List<Favorites> favoritesCacheable() {
         List<Favorites> favorites = new ArrayList<>();
         favoritesRepository.findAll().forEach(favorites::add);
         return favorites;
